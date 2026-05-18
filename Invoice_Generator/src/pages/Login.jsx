@@ -21,14 +21,15 @@ const Login = () => {
     e.preventDefault();
     if (submitting) return;
     setSubmitting(true);
-
-    const result = await login(email.trim(), password);
-
-    if (result.ok) {
-      toast.success("Welcome back!");
-      navigate(from, { replace: true });
-    } else {
-      toast.error(result.error);
+    try {
+      const result = await login(email.trim(), password);
+      if (result.ok) {
+        toast.success("Welcome back!");
+        navigate(from, { replace: true });
+      } else {
+        toast.error(result.error);
+      }
+    } finally {
       setSubmitting(false);
     }
   };

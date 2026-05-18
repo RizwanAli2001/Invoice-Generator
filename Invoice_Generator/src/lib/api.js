@@ -6,6 +6,7 @@ export const TOKEN_KEY = "invoiceai_token";
 
 export const api = axios.create({
   baseURL,
+  timeout: 20000,
   headers: { "Content-Type": "application/json" },
 });
 
@@ -36,6 +37,12 @@ export const getErrorMessage = (err, fallback = "Something went wrong") => {
   const data = err?.response?.data;
   if (data?.message) return data.message;
   if (data?.details?.length) return data.details[0].message || fallback;
+  if (err?.code === "ECONNABORTED") {
+    return "Request timed out — the API is not responding. Check that the backend and database are running.";
+  }
+  if (!err?.response) {
+    return "Network error — cannot reach the API. The server may be down or the database is not connected.";
+  }
   if (err?.message) return err.message;
   return fallback;
 };
